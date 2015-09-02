@@ -30,7 +30,7 @@ class ObjLoader {
     init(source: String) {
         self.source = source
         scanner = NSScanner(string: source)
-        scanner.charactersToBeSkipped = self.dynamicType.whiteSpaceCharacters
+        scanner.charactersToBeSkipped = ObjLoader.whiteSpaceCharacters
     }
 
     func read() throws -> [Shape] {
@@ -53,40 +53,40 @@ class ObjLoader {
 
         while false == scanner.atEnd {
             var marker: NSString?
-            scanner.scanUpToCharactersFromSet(self.dynamicType.whiteSpaceCharacters, intoString: &marker)
+            scanner.scanUpToCharactersFromSet(ObjLoader.whiteSpaceCharacters, intoString: &marker)
 
             guard let m = marker where m.length > 0 else {
                 moveToNextLine()
                 continue
             }
 
-            if self.dynamicType.isComment(m) {
+            if ObjLoader.isComment(m) {
                 moveToNextLine()
                 continue
-            } else if self.dynamicType.isVertex(m) {
+            } else if ObjLoader.isVertex(m) {
                 if let v = readVertex() {
                     currentVertices.append(v)
                 }
 
                 moveToNextLine()
                 continue
-            } else if self.dynamicType.isNormal(m) {
+            } else if ObjLoader.isNormal(m) {
                 if let n = readVertex() {
                     currentNormals.append(n)
                 }
 
                 moveToNextLine()
                 continue
-            } else if self.dynamicType.isObject(m) {
-                if let s = self.dynamicType.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
+            } else if ObjLoader.isObject(m) {
+                if let s = ObjLoader.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
                     shapes.append(s)
                 }
 
                 clear()
-                scanner.scanUpToCharactersFromSet(self.dynamicType.newLineCharacters, intoString: &currentName)
+                scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &currentName)
                 moveToNextLine()
                 continue
-            } else if self.dynamicType.isFace(m) {
+            } else if ObjLoader.isFace(m) {
                 if let indices = try readFace() {
                     currentFaces.append(indices)
                 }
@@ -99,7 +99,7 @@ class ObjLoader {
             }
         }
 
-        if let s = self.dynamicType.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
+        if let s = ObjLoader.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
             shapes.append(s)
         }
         clear()
@@ -187,14 +187,14 @@ class ObjLoader {
                 vn = Int(tmp)
             }
 
-            result.append(VertexIndex(vIndex: self.dynamicType.normalizeIndex(v), nIndex: self.dynamicType.normalizeIndex(vn), tIndex: self.dynamicType.normalizeIndex(vt)))
+            result.append(VertexIndex(vIndex: ObjLoader.normalizeIndex(v), nIndex: ObjLoader.normalizeIndex(vn), tIndex: ObjLoader.normalizeIndex(vt)))
         }
 
         return result
     }
 
     private func moveToNextLine() {
-        scanner.scanUpToCharactersFromSet(self.dynamicType.newLineCharacters, intoString: nil)
+        scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: nil)
         scanner.scanCharactersFromSet(NSCharacterSet.whitespaceAndNewlineCharacterSet(), intoString: nil)
     }
 

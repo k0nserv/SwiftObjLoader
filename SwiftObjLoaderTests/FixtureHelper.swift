@@ -15,7 +15,7 @@ enum FixtureLoadingErrors: ErrorType {
 class FixtureHelper {
     let bundle: NSBundle
     init() {
-        bundle = self.dynamicType.loadBundle()
+        bundle = FixtureHelper.loadBundle()
     }
 
     func loadObjFixture(name: String) throws -> String {
