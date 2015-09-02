@@ -21,7 +21,7 @@ Features todo
 License
 -------
 
-MIT(see LICENSE.md)
+MIT(see [LICENSE.md](LICENSE.md))
 
 Author
 ------
