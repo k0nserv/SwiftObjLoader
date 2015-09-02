@@ -9,11 +9,29 @@
 import Foundation
 import Darwin
 
+struct VertexIndex {
+    // Vertex index, zero-based
+    let vIndex: Int?
+    // Normal index, zero-based
+    let nIndex: Int?
+    // Texture Coord index, zero-based
+    let tIndex: Int?
+}
+
+extension VertexIndex: Equatable {}
+
+func ==(lhs: VertexIndex, rhs: VertexIndex) -> Bool {
+    return lhs.vIndex == rhs.vIndex &&
+           lhs.nIndex == rhs.nIndex &&
+           lhs.tIndex == rhs.tIndex
+}
+
 struct Shape {
     let name: String?
     let vertices: [[Double]]
     let normals: [[Double]]
     let textureCoords: [[Double]]
+    let faces: [[VertexIndex]]
 }
 
 extension Shape: Equatable {}
@@ -78,6 +96,13 @@ func ==(lhs: Shape, rhs: Shape) -> Bool {
             return false
     }
 
+    if !nestedEquality(lhs.faces, rhs.faces, equal: { $0.count == $1.count }) {
+        return false
+    }
+
+    if !nestedEquality(lhs.faces, rhs.faces, equal: { $0 == $1 }) {
+        return false
+    }
 
 
     return true
