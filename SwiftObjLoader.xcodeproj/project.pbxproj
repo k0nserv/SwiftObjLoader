@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		D65A34651B96F39C008EBCA8 /* SwiftObjLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D65A346C1B96F39C008EBCA8 /* SwiftObjLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */; settings = {ASSET_TAGS = (); }; };
+		D65A347C1B96F4C8008EBCA8 /* ObjLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A347B1B96F4C8008EBCA8 /* ObjLoader.swift */; settings = {ASSET_TAGS = (); }; };
+		D65A347F1B96F611008EBCA8 /* simple.obj in Resources */ = {isa = PBXBuildFile; fileRef = D65A347E1B96F611008EBCA8 /* simple.obj */; settings = {ASSET_TAGS = (); }; };
+		D65A34811B96F65B008EBCA8 /* ObjLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A34801B96F65B008EBCA8 /* ObjLoaderTests.swift */; settings = {ASSET_TAGS = (); }; };
+		D65A34831B96F728008EBCA8 /* FixtureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A34821B96F728008EBCA8 /* FixtureHelper.swift */; settings = {ASSET_TAGS = (); }; };
+		D65A34851B9703A8008EBCA8 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A34841B9703A8008EBCA8 /* Geometry.swift */; settings = {ASSET_TAGS = (); }; };
+		D6A65BD01B971243005440CB /* GeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A65BCF1B971243005440CB /* GeometryTests.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +33,12 @@
 		D65A34661B96F39C008EBCA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D65A346B1B96F39C008EBCA8 /* SwiftObjLoaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftObjLoaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65A34721B96F39C008EBCA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D65A347B1B96F4C8008EBCA8 /* ObjLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjLoader.swift; sourceTree = "<group>"; };
+		D65A347E1B96F611008EBCA8 /* simple.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simple.obj; sourceTree = "<group>"; };
+		D65A34801B96F65B008EBCA8 /* ObjLoaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjLoaderTests.swift; sourceTree = "<group>"; };
+		D65A34821B96F728008EBCA8 /* FixtureHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixtureHelper.swift; sourceTree = "<group>"; };
+		D65A34841B9703A8008EBCA8 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
+		D6A65BCF1B971243005440CB /* GeometryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +83,8 @@
 			children = (
 				D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */,
 				D65A34661B96F39C008EBCA8 /* Info.plist */,
+				D65A347B1B96F4C8008EBCA8 /* ObjLoader.swift */,
+				D65A34841B9703A8008EBCA8 /* Geometry.swift */,
 			);
 			path = SwiftObjLoader;
 			sourceTree = "<group>";
@@ -78,9 +92,21 @@
 		D65A346F1B96F39C008EBCA8 /* SwiftObjLoaderTests */ = {
 			isa = PBXGroup;
 			children = (
+				D65A347D1B96F596008EBCA8 /* Fixtures */,
 				D65A34721B96F39C008EBCA8 /* Info.plist */,
+				D65A34801B96F65B008EBCA8 /* ObjLoaderTests.swift */,
+				D65A34821B96F728008EBCA8 /* FixtureHelper.swift */,
+				D6A65BCF1B971243005440CB /* GeometryTests.swift */,
 			);
 			path = SwiftObjLoaderTests;
+			sourceTree = "<group>";
+		};
+		D65A347D1B96F596008EBCA8 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				D65A347E1B96F611008EBCA8 /* simple.obj */,
+			);
+			path = Fixtures;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,6 +207,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D65A347F1B96F611008EBCA8 /* simple.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +218,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D65A347C1B96F4C8008EBCA8 /* ObjLoader.swift in Sources */,
+				D65A34851B9703A8008EBCA8 /* Geometry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +227,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D65A34811B96F65B008EBCA8 /* ObjLoaderTests.swift in Sources */,
+				D6A65BD01B971243005440CB /* GeometryTests.swift in Sources */,
+				D65A34831B96F728008EBCA8 /* FixtureHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
