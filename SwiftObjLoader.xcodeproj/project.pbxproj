@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		D65A34651B96F39C008EBCA8 /* SwiftObjLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D65A346C1B96F39C008EBCA8 /* SwiftObjLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */; settings = {ASSET_TAGS = (); }; };
-		D65A34711B96F39C008EBCA8 /* SwiftObjLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A34701B96F39C008EBCA8 /* SwiftObjLoaderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,7 +26,6 @@
 		D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftObjLoader.h; sourceTree = "<group>"; };
 		D65A34661B96F39C008EBCA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D65A346B1B96F39C008EBCA8 /* SwiftObjLoaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftObjLoaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D65A34701B96F39C008EBCA8 /* SwiftObjLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftObjLoaderTests.swift; sourceTree = "<group>"; };
 		D65A34721B96F39C008EBCA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,7 +78,6 @@
 		D65A346F1B96F39C008EBCA8 /* SwiftObjLoaderTests */ = {
 			isa = PBXGroup;
 			children = (
-				D65A34701B96F39C008EBCA8 /* SwiftObjLoaderTests.swift */,
 				D65A34721B96F39C008EBCA8 /* Info.plist */,
 			);
 			path = SwiftObjLoaderTests;
@@ -142,6 +139,7 @@
 		D65A34581B96F39C008EBCA8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Hugo Tunius";
 				TargetAttributes = {
@@ -200,7 +198,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D65A34711B96F39C008EBCA8 /* SwiftObjLoaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +299,7 @@
 		D65A34761B96F39C008EBCA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -314,12 +312,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.hugotunius.SwiftObjLoader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		D65A34771B96F39C008EBCA8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -376,6 +376,7 @@
 				D65A34771B96F39C008EBCA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D65A34781B96F39C008EBCA8 /* Build configuration list for PBXNativeTarget "SwiftObjLoaderTests" */ = {
 			isa = XCConfigurationList;
@@ -384,6 +385,7 @@
 				D65A347A1B96F39C008EBCA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
