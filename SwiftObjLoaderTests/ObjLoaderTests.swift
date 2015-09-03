@@ -54,13 +54,24 @@ class ObjLoaderTests: XCTestCase {
                 // vn 0.000000 0.000000 -1.000000
                 [0.000000, 0.000000, -1.000000, 1.0]
             ]
+
+            let textureCoords = [
+                // vt 0.000000 1.000000
+                [0.000000, 1.000000, 0.0],
+                // vt 1.000000 0.000000
+                [1.000000, 0.000000, 0.0],
+                // vt 0.000000 1.000000
+                [0.000000, 1.000000, 0.0],
+                // vt 1.000000 1.000000
+                [1.000000, 1.000000, 0.0]
+            ]
             let faces = [
                 // f 1//1 2//1 3//1 4//1
                 [
-                    VertexIndex(vIndex: 0, nIndex: 0, tIndex: nil),
-                    VertexIndex(vIndex: 1, nIndex: 0, tIndex: nil),
-                    VertexIndex(vIndex: 2, nIndex: 0, tIndex: nil),
-                    VertexIndex(vIndex: 3, nIndex: 0, tIndex: nil)
+                    VertexIndex(vIndex: 0, nIndex: 0, tIndex: 0),
+                    VertexIndex(vIndex: 1, nIndex: 0, tIndex: 1),
+                    VertexIndex(vIndex: 2, nIndex: 0, tIndex: 2),
+                    VertexIndex(vIndex: 3, nIndex: 0, tIndex: 3)
                 ],
                 // f 5//2 8//2 7//2 6//2
                 [
@@ -99,7 +110,7 @@ class ObjLoaderTests: XCTestCase {
                 ]
 
             ]
-            let expectedShape = Shape(name: "Cube", vertices: vertices, normals: normals, textureCoords: [], faces: faces)
+            let expectedShape = Shape(name: "Cube", vertices: vertices, normals: normals, textureCoords: textureCoords, faces: faces)
             XCTAssertEqual(expectedShape, shapes[0])
         } catch ObjLoadingError.UnexpectedFileFormat(let errorMessage) {
             XCTFail("Parsing failed with error \(errorMessage)")

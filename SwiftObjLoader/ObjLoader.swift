@@ -21,6 +21,7 @@ class ObjLoader {
     private static let commentMarker = "#".characterAtIndex(0)
     private static let vertexMarker = "v".characterAtIndex(0)
     private static let normalMarker = "vn"
+    private static let textureCoordMarker = "vt"
     private static let objectMarker = "o".characterAtIndex(0)
     private static let faceMarker = "f".characterAtIndex(0)
 
@@ -77,6 +78,13 @@ class ObjLoader {
 
                 moveToNextLine()
                 continue
+            } else if ObjLoader.isTextureCoord(m) {
+                if let vt = readTextureCoord() {
+                    currentTextureCoords.append(vt)
+                }
+
+                moveToNextLine()
+                continue
             } else if ObjLoader.isObject(m) {
                 if let s = ObjLoader.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
                     shapes.append(s)
@@ -119,6 +127,10 @@ class ObjLoader {
         return marker.length == 2 && marker.substringToIndex(2) == normalMarker
     }
 
+    private static func isTextureCoord(marker: NSString) -> Bool {
+        return marker.length == 2 && marker.substringToIndex(2) == textureCoordMarker
+    }
+
     private static func isObject(marker: NSString) -> Bool {
         return marker.length == 1 && marker.characterAtIndex(0) == objectMarker
     }
@@ -126,6 +138,7 @@ class ObjLoader {
     private static func isFace(marker: NSString) -> Bool {
         return marker.length == 1 && marker.characterAtIndex(0) == faceMarker
     }
+
 
     private func readVertex() -> [Double]? {
         var x = Double.infinity
@@ -148,6 +161,22 @@ class ObjLoader {
         scanner.scanDouble(&w)
 
         return [x, y, z, w]
+    }
+
+    private func readTextureCoord() -> [Double]? {
+        var u = Double.infinity
+        var v = 0.0
+        var w = 0.0
+
+        guard scanner.scanDouble(&u) else {
+            return nil
+        }
+
+        if scanner.scanDouble(&v) {
+            scanner.scanDouble(&w)
+        }
+
+        return [u, v, w]
     }
 
     // Parses face declarations
