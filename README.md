@@ -8,14 +8,14 @@ Implemented features
 + Object names
 + Vertices
 + Normals
++ Texture coordinates
 + Faces
 
 Features todo
 -------------
 
-+ Texture coordinates
 + Groups
-+ Material loading and parsin(.mtl)
++ Material loading and parsing(.mtl)
 + Material reference
 
 License
