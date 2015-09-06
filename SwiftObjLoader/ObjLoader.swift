@@ -66,67 +66,73 @@ class ObjLoader {
             self.state = State()
         }
 
-        while false == scanner.atEnd {
-            var marker: NSString?
-            scanner.scanUpToCharactersFromSet(ObjLoader.whiteSpaceCharacters, intoString: &marker)
+        do {
+            while false == scanner.atEnd {
+                var marker: NSString?
+                scanner.scanUpToCharactersFromSet(ObjLoader.whiteSpaceCharacters, intoString: &marker)
 
-            guard let m = marker where m.length > 0 else {
-                moveToNextLine()
-                continue
+                guard let m = marker where m.length > 0 else {
+                    moveToNextLine()
+                    continue
+                }
+
+                if ObjLoader.isComment(m) {
+                    moveToNextLine()
+                    continue
+                } else if ObjLoader.isVertex(m) {
+                    if let v = try readVertex() {
+                        state.vertices.append(v)
+                    }
+
+                    moveToNextLine()
+                    continue
+                } else if ObjLoader.isNormal(m) {
+                    if let n = try readVertex() {
+                        state.normals.append(n)
+                    }
+
+                    moveToNextLine()
+                    continue
+                } else if ObjLoader.isTextureCoord(m) {
+                    if let vt = readTextureCoord() {
+                        state.textureCoords.append(vt)
+                    }
+
+                    moveToNextLine()
+                    continue
+                } else if ObjLoader.isObject(m) {
+                    if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
+                        shapes.append(s)
+                    }
+
+                    clear()
+                    scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &state.objectName)
+                    moveToNextLine()
+                    continue
+                } else if ObjLoader.isFace(m) {
+                    if let indices = try readFace() {
+                        state.faces.append(indices)
+                    }
+
+                    moveToNextLine()
+                    continue
+                } else {
+                    moveToNextLine()
+                    continue
+                }
             }
 
-            if ObjLoader.isComment(m) {
-                moveToNextLine()
-                continue
-            } else if ObjLoader.isVertex(m) {
-                if let v = readVertex() {
-                    state.vertices.append(v)
-                }
-
-                moveToNextLine()
-                continue
-            } else if ObjLoader.isNormal(m) {
-                if let n = readVertex() {
-                    state.normals.append(n)
-                }
-
-                moveToNextLine()
-                continue
-            } else if ObjLoader.isTextureCoord(m) {
-                if let vt = readTextureCoord() {
-                    state.textureCoords.append(vt)
-                }
-
-                moveToNextLine()
-                continue
-            } else if ObjLoader.isObject(m) {
-                if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
-                    shapes.append(s)
-                }
-
-                clear()
-                scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &state.objectName)
-                moveToNextLine()
-                continue
-            } else if ObjLoader.isFace(m) {
-                if let indices = try readFace() {
-                    state.faces.append(indices)
-                }
-
-                moveToNextLine()
-                continue
-            } else {
-                moveToNextLine()
-                continue
+            if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
+                shapes.append(s)
             }
-        }
+            clear()
 
-        if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
-            shapes.append(s)
+            running = false
+        } catch let e {
+            running = false
+            clear()
+            throw e
         }
-        clear()
-
-        running = false
         return shapes
     }
 
@@ -160,22 +166,22 @@ class ObjLoader {
     //  19.2938 1.29019 0.2839
     //  1.29349 -0.93829 1.28392 0.6
     //
-    private func readVertex() -> [Double]? {
+    private func readVertex() throws -> [Double]? {
         var x = Double.infinity
         var y = Double.infinity
         var z = Double.infinity
         var w = 1.0
 
         guard scanner.scanDouble(&x) else {
-            return nil
+            throw ObjLoadingError.UnexpectedFileFormat(error: "Unexecpted vertex definitions missing x component")
         }
 
         guard scanner.scanDouble(&y) else {
-            return nil
+            throw ObjLoadingError.UnexpectedFileFormat(error: "Unexecpted vertex definitions missing y component")
         }
 
         guard scanner.scanDouble(&z) else {
-            return nil
+            throw ObjLoadingError.UnexpectedFileFormat(error: "Unexecpted vertex definitions missing z component")
         }
 
         scanner.scanDouble(&w)
