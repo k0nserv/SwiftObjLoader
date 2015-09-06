@@ -52,6 +52,10 @@ class ObjLoader {
         scanner.charactersToBeSkipped = ObjLoader.whiteSpaceCharacters
     }
 
+    // Read the specified source.
+    // This operation is singled threaded and
+    // should not be invoked again before
+    // the call has returned
     func read() throws -> [Shape] {
         running = true
         var shapes: [Shape] = []
@@ -150,7 +154,12 @@ class ObjLoader {
         return marker.length == 1 && marker.characterAtIndex(0) == faceMarker
     }
 
-
+    // Read 3(optionally 4) space separated double values from the scanner
+    // The fourth w value defaults to 1.0 if not present
+    // Example:
+    //  19.2938 1.29019 0.2839
+    //  1.29349 -0.93829 1.28392 0.6
+    //
     private func readVertex() -> [Double]? {
         var x = Double.infinity
         var y = Double.infinity
@@ -174,6 +183,7 @@ class ObjLoader {
         return [x, y, z, w]
     }
 
+    // Read 1, 2 or 3 texture coords from the scanner
     private func readTextureCoord() -> [Double]? {
         var u = Double.infinity
         var v = 0.0
