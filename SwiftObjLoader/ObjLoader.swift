@@ -28,17 +28,25 @@ struct State {
 }
 
 class ObjLoader {
-    private let source: String
-    private let scanner: NSScanner
-
-    private static let whiteSpaceCharacters = NSCharacterSet.whitespaceCharacterSet()
-    private static let newLineCharacters = NSCharacterSet.newlineCharacterSet()
+    // Source markers
     private static let commentMarker = "#".characterAtIndex(0)
     private static let vertexMarker = "v".characterAtIndex(0)
     private static let normalMarker = "vn"
     private static let textureCoordMarker = "vt"
     private static let objectMarker = "o".characterAtIndex(0)
     private static let faceMarker = "f".characterAtIndex(0)
+
+    private static let whiteSpaceCharacters = NSCharacterSet.whitespaceCharacterSet()
+    private static let newLineCharacters = NSCharacterSet.newlineCharacterSet()
+
+    private let source: String
+    private let scanner: NSScanner
+    private var running: Bool = false
+
+    private var state = State()
+    private var vertexCount = 0
+    private var normalCount = 0
+    private var textureCoordCount = 0
 
     // Init an objloader with the
     // source of the .obj file as a string
@@ -50,12 +58,13 @@ class ObjLoader {
     }
 
     func read() throws -> [Shape] {
-        scanner.scanLocation = 0
+        running = true
         var shapes: [Shape] = []
-        var state = State()
+
+        resetState()
 
         let clear: () -> () = {
-            state = State()
+            self.state = State()
         }
 
         while false == scanner.atEnd {
@@ -92,7 +101,7 @@ class ObjLoader {
                 moveToNextLine()
                 continue
             } else if ObjLoader.isObject(m) {
-                if let s = ObjLoader.buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
+                if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
                     shapes.append(s)
                 }
 
@@ -113,11 +122,12 @@ class ObjLoader {
             }
         }
 
-        if let s = ObjLoader.buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
+        if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
             shapes.append(s)
         }
         clear()
 
+        running = false
         return shapes
     }
 
@@ -222,7 +232,7 @@ class ObjLoader {
                 vn = Int(tmp)
             }
 
-            result.append(VertexIndex(vIndex: ObjLoader.normalizeIndex(v), nIndex: ObjLoader.normalizeIndex(vn), tIndex: ObjLoader.normalizeIndex(vt)))
+            result.append(VertexIndex(vIndex: ObjLoader.normalizeIndex(v, count: vertexCount), nIndex: ObjLoader.normalizeIndex(vn, count: normalCount), tIndex: ObjLoader.normalizeIndex(vt, count: textureCoordCount)))
         }
 
         return result
@@ -233,15 +243,29 @@ class ObjLoader {
         scanner.scanCharactersFromSet(NSCharacterSet.whitespaceAndNewlineCharacterSet(), intoString: nil)
     }
 
-    private static func buildShape(name: NSString?, vertices: [[Double]], normals: [[Double]], textureCoords: [[Double]], faces: [[VertexIndex]]) -> Shape? {
+    private func resetState() {
+        scanner.scanLocation = 0
+        state = State()
+        vertexCount = 0
+        normalCount = 0
+        textureCoordCount = 0
+    }
+
+    private func buildShape(name: NSString?, vertices: [[Double]], normals: [[Double]], textureCoords: [[Double]], faces: [[VertexIndex]]) -> Shape? {
         if vertices.count == 0 && normals.count == 0 && textureCoords.count == 0 {
             return nil
         }
 
-        return Shape(name: (name as String?), vertices: vertices, normals: normals, textureCoords: textureCoords, faces: faces)
+
+        let result =  Shape(name: (name as String?), vertices: vertices, normals: normals, textureCoords: textureCoords, faces: faces)
+        vertexCount += vertices.count
+        normalCount += normals.count
+        textureCoordCount += textureCoords.count
+
+        return result
     }
 
-    private static func normalizeIndex(index: Int?) -> Int? {
+    private static func normalizeIndex(index: Int?, count: Int) -> Int? {
         guard let i = index else {
             return nil
         }
@@ -250,6 +274,6 @@ class ObjLoader {
             return 0
         }
 
-        return i - 1
+        return i - count - 1
     }
 }

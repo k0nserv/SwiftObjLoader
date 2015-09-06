@@ -28,10 +28,32 @@ func ==(lhs: VertexIndex, rhs: VertexIndex) -> Bool {
 
 struct Shape {
     let name: String?
-    let vertices: [[Double]]
-    let normals: [[Double]]
-    let textureCoords: [[Double]]
+    let vertices: [Vector]
+    let normals: [Vector]
+    let textureCoords: [Vector]
+
+    // Definition of faces that make up the shape
+    // indexes are into the vertices, normals and
+    // texture coords of this shape
     let faces: [[VertexIndex]]
+
+    func dataForVertexIndex(v: VertexIndex) -> (Vector?, Vector?, Vector?) {
+        var data: (Vector?, Vector?, Vector?) = (nil, nil, nil)
+
+        if let vi = v.vIndex {
+            data.0 = vertices[vi]
+        }
+
+        if let ni = v.nIndex {
+            data.1 = normals[ni]
+        }
+
+        if let ti = v.tIndex {
+            data.2 = textureCoords[ti]
+        }
+
+        return data
+    }
 }
 
 extension Shape: Equatable {}
@@ -71,7 +93,7 @@ func ==(lhs: Shape, rhs: Shape) -> Bool {
         return false
     }
 
-    let lengthCheck: ([Double], [Double]) -> Bool = { a, b in
+    let lengthCheck: (Vector, Vector) -> Bool = { a, b in
         a.count == b.count
     }
 
@@ -81,7 +103,7 @@ func ==(lhs: Shape, rhs: Shape) -> Bool {
         return false
     }
 
-    let valueCheck: ([Double], [Double]) -> Bool = { a, b in
+    let valueCheck: (Vector, Vector) -> Bool = { a, b in
         for var i = 0; i < a.count; i++ {
             if !doubleEquality(a[i], b[i]) {
                 return false

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D61BBF621B9CA1DA0002600C /* triangle_and_box.obj in Resources */ = {isa = PBXBuildFile; fileRef = D61BBF611B9CA1DA0002600C /* triangle_and_box.obj */; settings = {ASSET_TAGS = (); }; };
 		D65A34651B96F39C008EBCA8 /* SwiftObjLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D65A346C1B96F39C008EBCA8 /* SwiftObjLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */; settings = {ASSET_TAGS = (); }; };
 		D65A347C1B96F4C8008EBCA8 /* ObjLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A347B1B96F4C8008EBCA8 /* ObjLoader.swift */; settings = {ASSET_TAGS = (); }; };
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D61BBF611B9CA1DA0002600C /* triangle_and_box.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = triangle_and_box.obj; sourceTree = "<group>"; };
 		D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftObjLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftObjLoader.h; sourceTree = "<group>"; };
 		D65A34661B96F39C008EBCA8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 		D65A347D1B96F596008EBCA8 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				D61BBF611B9CA1DA0002600C /* triangle_and_box.obj */,
 				D65A347E1B96F611008EBCA8 /* simple.obj */,
 			);
 			path = Fixtures;
@@ -208,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D65A347F1B96F611008EBCA8 /* simple.obj in Resources */,
+				D61BBF621B9CA1DA0002600C /* triangle_and_box.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
