@@ -62,10 +62,6 @@ class ObjLoader {
 
         resetState()
 
-        let clear: () -> () = {
-            self.state = State()
-        }
-
         do {
             while false == scanner.atEnd {
                 var marker: NSString?
@@ -105,7 +101,7 @@ class ObjLoader {
                         shapes.append(s)
                     }
 
-                    clear()
+                    state = State()
                     scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &state.objectName)
                     moveToNextLine()
                     continue
@@ -125,12 +121,12 @@ class ObjLoader {
             if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
                 shapes.append(s)
             }
-            clear()
+            state = State()
 
             running = false
         } catch let e {
             running = false
-            clear()
+            resetState()
             throw e
         }
         return shapes
