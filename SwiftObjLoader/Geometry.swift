@@ -9,6 +9,11 @@
 import Foundation
 import Darwin
 
+// An n dimensional vector
+// repreented by a double array
+typealias Vector = [Double]
+
+
 struct VertexIndex {
     // Vertex index, zero-based
     let vIndex: Int?
@@ -35,6 +40,11 @@ struct Shape {
     // Definition of faces that make up the shape
     // indexes are into the vertices, normals and
     // texture coords of this shape
+    //
+    // Example:
+    //   VertexIndex(vIndex: 4, nIndex: 2, tIndex: 0)
+    // Refers to vertices[4], normals[2] and textureCoords[0]
+    //
     let faces: [[VertexIndex]]
 
     func dataForVertexIndex(v: VertexIndex) -> (Vector?, Vector?, Vector?) {

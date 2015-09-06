@@ -12,11 +12,6 @@ enum ObjLoadingError: ErrorType {
     case UnexpectedFileFormat(error: String)
 }
 
-// A n dimensional vector
-// repreented by a double array
-typealias Vector = [Double]
-
-
 // Represent the state of parsing
 // at any point in time
 struct State {
