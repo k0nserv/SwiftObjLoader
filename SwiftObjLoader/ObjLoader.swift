@@ -12,6 +12,21 @@ enum ObjLoadingError: ErrorType {
     case UnexpectedFileFormat(error: String)
 }
 
+// A n dimensional vector
+// repreented by a double array
+typealias Vector = [Double]
+
+
+// Represent the state of parsing
+// at any point in time
+struct State {
+    var objectName: NSString?
+    var vertices: [Vector] = []
+    var normals: [Vector] = []
+    var textureCoords: [Vector] = []
+    var faces: [[VertexIndex]] = []
+}
+
 class ObjLoader {
     private let source: String
     private let scanner: NSScanner
@@ -37,19 +52,10 @@ class ObjLoader {
     func read() throws -> [Shape] {
         scanner.scanLocation = 0
         var shapes: [Shape] = []
-
-        var currentName: NSString?
-        var currentVertices: [[Double]] = []
-        var currentNormals: [[Double]] = []
-        var currentTextureCoords: [[Double]] = []
-        var currentFaces: [[VertexIndex]] = []
+        var state = State()
 
         let clear: () -> () = {
-            currentName = nil
-            currentVertices.removeAll()
-            currentNormals.removeAll()
-            currentTextureCoords.removeAll()
-            currentFaces.removeAll()
+            state = State()
         }
 
         while false == scanner.atEnd {
@@ -66,37 +72,37 @@ class ObjLoader {
                 continue
             } else if ObjLoader.isVertex(m) {
                 if let v = readVertex() {
-                    currentVertices.append(v)
+                    state.vertices.append(v)
                 }
 
                 moveToNextLine()
                 continue
             } else if ObjLoader.isNormal(m) {
                 if let n = readVertex() {
-                    currentNormals.append(n)
+                    state.normals.append(n)
                 }
 
                 moveToNextLine()
                 continue
             } else if ObjLoader.isTextureCoord(m) {
                 if let vt = readTextureCoord() {
-                    currentTextureCoords.append(vt)
+                    state.textureCoords.append(vt)
                 }
 
                 moveToNextLine()
                 continue
             } else if ObjLoader.isObject(m) {
-                if let s = ObjLoader.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
+                if let s = ObjLoader.buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
                     shapes.append(s)
                 }
 
                 clear()
-                scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &currentName)
+                scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &state.objectName)
                 moveToNextLine()
                 continue
             } else if ObjLoader.isFace(m) {
                 if let indices = try readFace() {
-                    currentFaces.append(indices)
+                    state.faces.append(indices)
                 }
 
                 moveToNextLine()
@@ -107,7 +113,7 @@ class ObjLoader {
             }
         }
 
-        if let s = ObjLoader.buildShape(currentName, vertices: currentVertices, normals: currentNormals, textureCoords: currentTextureCoords, faces: currentFaces) {
+        if let s = ObjLoader.buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
             shapes.append(s)
         }
         clear()
