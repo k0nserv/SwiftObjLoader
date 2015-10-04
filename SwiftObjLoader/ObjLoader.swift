@@ -31,11 +31,7 @@ class ObjLoader {
     private static let objectMarker = "o".characterAtIndex(0)
     private static let faceMarker = "f".characterAtIndex(0)
 
-    private static let whiteSpaceCharacters = NSCharacterSet.whitespaceCharacterSet()
-    private static let newLineCharacters = NSCharacterSet.newlineCharacterSet()
-
-    private let source: String
-    private let scanner: NSScanner
+    private let scanner: ObjScanner
     private var running: Bool = false
 
     private var state = State()
@@ -47,9 +43,7 @@ class ObjLoader {
     // source of the .obj file as a string
     //
     init(source: String) {
-        self.source = source
-        scanner = NSScanner(string: source)
-        scanner.charactersToBeSkipped = ObjLoader.whiteSpaceCharacters
+        scanner = ObjScanner(source: source)
     }
 
     // Read the specified source.
@@ -63,38 +57,37 @@ class ObjLoader {
         resetState()
 
         do {
-            while false == scanner.atEnd {
-                var marker: NSString?
-                scanner.scanUpToCharactersFromSet(ObjLoader.whiteSpaceCharacters, intoString: &marker)
+            while scanner.dataAvailable {
+                let marker = scanner.readMarker()
 
                 guard let m = marker where m.length > 0 else {
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 }
 
                 if ObjLoader.isComment(m) {
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 } else if ObjLoader.isVertex(m) {
                     if let v = try readVertex() {
                         state.vertices.append(v)
                     }
 
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 } else if ObjLoader.isNormal(m) {
                     if let n = try readVertex() {
                         state.normals.append(n)
                     }
 
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 } else if ObjLoader.isTextureCoord(m) {
-                    if let vt = readTextureCoord() {
+                    if let vt = scanner.readTextureCoord() {
                         state.textureCoords.append(vt)
                     }
 
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 } else if ObjLoader.isObject(m) {
                     if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
@@ -102,18 +95,18 @@ class ObjLoader {
                     }
 
                     state = State()
-                    scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: &state.objectName)
-                    moveToNextLine()
+                    state.objectName = scanner.readLine()
+                    scanner.moveToNextLine()
                     continue
                 } else if ObjLoader.isFace(m) {
-                    if let indices = try readFace() {
-                        state.faces.append(indices)
+                    if let indices = try scanner.readFace() {
+                        state.faces.append(normalizeVertexIndices(indices))
                     }
 
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 } else {
-                    moveToNextLine()
+                    scanner.moveToNextLine()
                     continue
                 }
             }
@@ -156,102 +149,16 @@ class ObjLoader {
         return marker.length == 1 && marker.characterAtIndex(0) == faceMarker
     }
 
-    // Read 3(optionally 4) space separated double values from the scanner
-    // The fourth w value defaults to 1.0 if not present
-    // Example:
-    //  19.2938 1.29019 0.2839
-    //  1.29349 -0.93829 1.28392 0.6
-    //
     private func readVertex() throws -> [Double]? {
-        var x = Double.infinity
-        var y = Double.infinity
-        var z = Double.infinity
-        var w = 1.0
-
-        guard scanner.scanDouble(&x) else {
-            throw ObjLoadingError.UnexpectedFileFormat(error: "Unexecpted vertex definitions missing x component")
+        do {
+            return try scanner.readVertex()
+        } catch ScannerErrors.UnreadableData(let error) {
+            throw ObjLoadingError.UnexpectedFileFormat(error: error)
         }
-
-        guard scanner.scanDouble(&y) else {
-            throw ObjLoadingError.UnexpectedFileFormat(error: "Unexecpted vertex definitions missing y component")
-        }
-
-        guard scanner.scanDouble(&z) else {
-            throw ObjLoadingError.UnexpectedFileFormat(error: "Unexecpted vertex definitions missing z component")
-        }
-
-        scanner.scanDouble(&w)
-
-        return [x, y, z, w]
-    }
-
-    // Read 1, 2 or 3 texture coords from the scanner
-    private func readTextureCoord() -> [Double]? {
-        var u = Double.infinity
-        var v = 0.0
-        var w = 0.0
-
-        guard scanner.scanDouble(&u) else {
-            return nil
-        }
-
-        if scanner.scanDouble(&v) {
-            scanner.scanDouble(&w)
-        }
-
-        return [u, v, w]
-    }
-
-    // Parses face declarations
-    //
-    // Example:
-    //
-    //     f v1/vt1/vn1 v2/vt2/vn2 ....
-    //
-    // Possible cases
-    // v1//
-    // v1//vn1
-    // v1/vt1/
-    // v1/vt1/vn1
-    private func readFace() throws -> [VertexIndex]? {
-        var result: [VertexIndex] = []
-        while true {
-            var v, vn, vt: Int?
-            var tmp: Int32 = -1
-
-            guard scanner.scanInt(&tmp) else {
-                break
-            }
-            v = Int(tmp)
-
-            guard scanner.scanString("/", intoString: nil) else {
-                throw ObjLoadingError.UnexpectedFileFormat(error: "Lack of '/' when parsing face definition, each vertex index should contain 2 '/'")
-            }
-
-            if scanner.scanInt(&tmp) { // v1/vt1/
-                vt = Int(tmp)
-            }
-            guard scanner.scanString("/", intoString: nil) else {
-                throw ObjLoadingError.UnexpectedFileFormat(error: "Lack of '/' when parsing face definition, each vertex index should contain 2 '/'")
-            }
-
-            if scanner.scanInt(&tmp) {
-                vn = Int(tmp)
-            }
-
-            result.append(VertexIndex(vIndex: ObjLoader.normalizeIndex(v, count: vertexCount), nIndex: ObjLoader.normalizeIndex(vn, count: normalCount), tIndex: ObjLoader.normalizeIndex(vt, count: textureCoordCount)))
-        }
-
-        return result
-    }
-
-    private func moveToNextLine() {
-        scanner.scanUpToCharactersFromSet(ObjLoader.newLineCharacters, intoString: nil)
-        scanner.scanCharactersFromSet(NSCharacterSet.whitespaceAndNewlineCharacterSet(), intoString: nil)
     }
 
     private func resetState() {
-        scanner.scanLocation = 0
+        scanner.reset()
         state = State()
         vertexCount = 0
         normalCount = 0
@@ -270,6 +177,14 @@ class ObjLoader {
         textureCoordCount += textureCoords.count
 
         return result
+    }
+
+    private func normalizeVertexIndices(unnormalizedIndices: [VertexIndex]) -> [VertexIndex] {
+        return unnormalizedIndices.map {
+            return VertexIndex(vIndex: ObjLoader.normalizeIndex($0.vIndex, count: vertexCount),
+                nIndex: ObjLoader.normalizeIndex($0.nIndex, count: normalCount),
+                tIndex: ObjLoader.normalizeIndex($0.tIndex, count: textureCoordCount))
+        }
     }
 
     private static func normalizeIndex(index: Int?, count: Int) -> Int? {
