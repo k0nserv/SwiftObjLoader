@@ -12,17 +12,18 @@ enum ObjLoadingError: ErrorType {
     case UnexpectedFileFormat(error: String)
 }
 
-// Represent the state of parsing
-// at any point in time
-struct State {
-    var objectName: NSString?
-    var vertices: [Vector] = []
-    var normals: [Vector] = []
-    var textureCoords: [Vector] = []
-    var faces: [[VertexIndex]] = []
-}
 
 class ObjLoader {
+    // Represent the state of parsing
+    // at any point in time
+    struct State {
+        var objectName: NSString?
+        var vertices: [Vector] = []
+        var normals: [Vector] = []
+        var textureCoords: [Vector] = []
+        var faces: [[VertexIndex]] = []
+    }
+
     // Source markers
     private static let commentMarker = "#".characterAtIndex(0)
     private static let vertexMarker = "v".characterAtIndex(0)

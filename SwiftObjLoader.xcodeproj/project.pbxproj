@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		D61BBF621B9CA1DA0002600C /* triangle_and_box.obj in Resources */ = {isa = PBXBuildFile; fileRef = D61BBF611B9CA1DA0002600C /* triangle_and_box.obj */; };
+		D62BF0931BC1C2BE00FCFE94 /* MaterialLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62BF0921BC1C2BE00FCFE94 /* MaterialLoader.swift */; };
+		D62BF0951BC1C49E00FCFE94 /* simple.mtl in Resources */ = {isa = PBXBuildFile; fileRef = D62BF0941BC1C49E00FCFE94 /* simple.mtl */; };
+		D62BF0971BC1C67E00FCFE94 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62BF0961BC1C67E00FCFE94 /* Material.swift */; };
 		D63A88261BA46EF800CFF32D /* ScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63A88251BA46EF800CFF32D /* ScannerTests.swift */; };
 		D65A34651B96F39C008EBCA8 /* SwiftObjLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D65A346C1B96F39C008EBCA8 /* SwiftObjLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */; };
@@ -18,6 +21,7 @@
 		D65A34851B9703A8008EBCA8 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65A34841B9703A8008EBCA8 /* Geometry.swift */; };
 		D6A65BD01B971243005440CB /* GeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6A65BCF1B971243005440CB /* GeometryTests.swift */; };
 		D6C4D4D31B9D8F2300CB375C /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C4D4D21B9D8F2300CB375C /* Scanner.swift */; };
+		D6EB5AC11C601C4B00F1C5B7 /* MaterialLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EB5AC01C601C4B00F1C5B7 /* MaterialLoaderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +36,9 @@
 
 /* Begin PBXFileReference section */
 		D61BBF611B9CA1DA0002600C /* triangle_and_box.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = triangle_and_box.obj; sourceTree = "<group>"; };
+		D62BF0921BC1C2BE00FCFE94 /* MaterialLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialLoader.swift; sourceTree = "<group>"; };
+		D62BF0941BC1C49E00FCFE94 /* simple.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simple.mtl; sourceTree = "<group>"; };
+		D62BF0961BC1C67E00FCFE94 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
 		D63A88251BA46EF800CFF32D /* ScannerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerTests.swift; sourceTree = "<group>"; };
 		D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftObjLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65A34641B96F39C008EBCA8 /* SwiftObjLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftObjLoader.h; sourceTree = "<group>"; };
@@ -45,6 +52,7 @@
 		D65A34841B9703A8008EBCA8 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
 		D6A65BCF1B971243005440CB /* GeometryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryTests.swift; sourceTree = "<group>"; };
 		D6C4D4D21B9D8F2300CB375C /* Scanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
+		D6EB5AC01C601C4B00F1C5B7 /* MaterialLoaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialLoaderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +100,8 @@
 				D65A347B1B96F4C8008EBCA8 /* ObjLoader.swift */,
 				D65A34841B9703A8008EBCA8 /* Geometry.swift */,
 				D6C4D4D21B9D8F2300CB375C /* Scanner.swift */,
+				D62BF0921BC1C2BE00FCFE94 /* MaterialLoader.swift */,
+				D62BF0961BC1C67E00FCFE94 /* Material.swift */,
 			);
 			path = SwiftObjLoader;
 			sourceTree = "<group>";
@@ -105,6 +115,7 @@
 				D65A34821B96F728008EBCA8 /* FixtureHelper.swift */,
 				D6A65BCF1B971243005440CB /* GeometryTests.swift */,
 				D63A88251BA46EF800CFF32D /* ScannerTests.swift */,
+				D6EB5AC01C601C4B00F1C5B7 /* MaterialLoaderTests.swift */,
 			);
 			path = SwiftObjLoaderTests;
 			sourceTree = "<group>";
@@ -112,6 +123,7 @@
 		D65A347D1B96F596008EBCA8 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				D62BF0941BC1C49E00FCFE94 /* simple.mtl */,
 				D61BBF611B9CA1DA0002600C /* triangle_and_box.obj */,
 				D65A347E1B96F611008EBCA8 /* simple.obj */,
 			);
@@ -217,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D65A347F1B96F611008EBCA8 /* simple.obj in Resources */,
+				D62BF0951BC1C49E00FCFE94 /* simple.mtl in Resources */,
 				D61BBF621B9CA1DA0002600C /* triangle_and_box.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,7 +241,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D62BF0971BC1C67E00FCFE94 /* Material.swift in Sources */,
 				D65A347C1B96F4C8008EBCA8 /* ObjLoader.swift in Sources */,
+				D62BF0931BC1C2BE00FCFE94 /* MaterialLoader.swift in Sources */,
 				D6C4D4D31B9D8F2300CB375C /* Scanner.swift in Sources */,
 				D65A34851B9703A8008EBCA8 /* Geometry.swift in Sources */,
 			);
@@ -238,6 +253,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6EB5AC11C601C4B00F1C5B7 /* MaterialLoaderTests.swift in Sources */,
 				D65A34811B96F65B008EBCA8 /* ObjLoaderTests.swift in Sources */,
 				D6A65BD01B971243005440CB /* GeometryTests.swift in Sources */,
 				D63A88261BA46EF800CFF32D /* ScannerTests.swift in Sources */,

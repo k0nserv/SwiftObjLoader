@@ -10,6 +10,7 @@ import Foundation
 
 enum ScannerErrors: ErrorType {
     case UnreadableData(error: String)
+    case InvalidData(error: String)
 }
 
 // A general Scanner for .obj and .tml files
@@ -50,50 +51,37 @@ class Scanner {
         return string
     }
 
-    // Read 3(optionally 4) space separated double values from the scanner
-    // The fourth w value defaults to 1.0 if not present
-    // Example:
-    //  19.2938 1.29019 0.2839
-    //  1.29349 -0.93829 1.28392 0.6
-    //
-    func readVertex() throws -> [Double]? {
-        var x = Double.infinity
-        var y = Double.infinity
-        var z = Double.infinity
-        var w = 1.0
-
-        guard scanner.scanDouble(&x) else {
-            throw ScannerErrors.UnreadableData(error: "Unexecpted vertex definitions missing x component")
+    // Read a single Int32 value
+    func readInt() throws -> Int32 {
+        var value = Int32.max
+        if scanner.scanInt(&value) {
+            return value
         }
 
-        guard scanner.scanDouble(&y) else {
-            throw ScannerErrors.UnreadableData(error: "Unexecpted vertex definitions missing y component")
-        }
-
-        guard scanner.scanDouble(&z) else {
-            throw ScannerErrors.UnreadableData(error: "Unexecpted vertex definitions missing z component")
-        }
-
-        scanner.scanDouble(&w)
-
-        return [x, y, z, w]
+        throw ScannerErrors.InvalidData(error: "Invalid Int value")
     }
 
-    // Read 1, 2 or 3 texture coords from the scanner
-    func readTextureCoord() -> [Double]? {
-        var u = Double.infinity
-        var v = 0.0
-        var w = 0.0
-
-        guard scanner.scanDouble(&u) else {
-            return nil
+    // Read a single Double value
+    func readDouble() throws -> Double {
+        var value = Double.infinity
+        if scanner.scanDouble(&value) {
+            return value
         }
 
-        if scanner.scanDouble(&v) {
-            scanner.scanDouble(&w)
+        throw ScannerErrors.InvalidData(error: "Invalid Double value")
+    }
+
+
+    func readString() throws -> NSString {
+        var string: NSString?
+
+        scanner.scanUpToCharactersFromSet(NSCharacterSet.whitespaceAndNewlineCharacterSet(), intoString: &string)
+
+        if let string = string {
+            return string
         }
 
-        return [u, v, w]
+        throw ScannerErrors.InvalidData(error: "Invalid String value")
     }
 
     func reset() {
@@ -145,5 +133,98 @@ class ObjScanner: Scanner {
         }
 
         return result
+    }
+
+    // Read 3(optionally 4) space separated double values from the scanner
+    // The fourth w value defaults to 1.0 if not present
+    // Example:
+    //  19.2938 1.29019 0.2839
+    //  1.29349 -0.93829 1.28392 0.6
+    //
+    func readVertex() throws -> [Double]? {
+        var x = Double.infinity
+        var y = Double.infinity
+        var z = Double.infinity
+        var w = 1.0
+
+        guard scanner.scanDouble(&x) else {
+            throw ScannerErrors.UnreadableData(error: "Bad vertex definition missing x component")
+        }
+
+        guard scanner.scanDouble(&y) else {
+            throw ScannerErrors.UnreadableData(error: "Bad vertex definition missing y component")
+        }
+
+        guard scanner.scanDouble(&z) else {
+            throw ScannerErrors.UnreadableData(error: "Bad vertex definition missing z component")
+        }
+
+        scanner.scanDouble(&w)
+
+        return [x, y, z, w]
+    }
+
+    // Read 1, 2 or 3 texture coords from the scanner
+    func readTextureCoord() -> [Double]? {
+        var u = Double.infinity
+        var v = 0.0
+        var w = 0.0
+
+        guard scanner.scanDouble(&u) else {
+            return nil
+        }
+
+        if scanner.scanDouble(&v) {
+            scanner.scanDouble(&w)
+        }
+        
+        return [u, v, w]
+    }
+}
+
+class MaterialScanner: Scanner {
+
+    // Parses color declaration
+    //
+    // Example:
+    //
+    //     ka 0.2432 0.123 0.12
+    //
+    func readColor() throws -> Color {
+        var r = Double.infinity
+        var g = Double.infinity
+        var b = Double.infinity
+
+        guard scanner.scanDouble(&r) else {
+            throw ScannerErrors.UnreadableData(error: "Bad color definition missing r component")
+        }
+
+        guard scanner.scanDouble(&g) else {
+            throw ScannerErrors.UnreadableData(error: "Bad color definition missing g component")
+        }
+
+        guard scanner.scanDouble(&b) else {
+            throw ScannerErrors.UnreadableData(error: "Bad color definition missing b component")
+        }
+
+        if r < 0.0 || r > 1.0 {
+            throw ScannerErrors.InvalidData(
+                error: "Bad (r) value \(r). Should be in range 0.0 to 1.0"
+            )
+        }
+
+        if g < 0.0 || g > 1.0 {
+            throw ScannerErrors.InvalidData(
+                error: "Bad g value \(g). Should be in range 0.0 to 1.0"
+            )
+        }
+
+        if b < 0.0 || b > 1.0 {
+            throw ScannerErrors.InvalidData(
+                error: "Bad b value \(b). Should be in range 0.0 to 1.0"
+            )
+        }
+
+        return Color(r: r, g: g, b: b)
     }
 }

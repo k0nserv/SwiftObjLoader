@@ -7,7 +7,12 @@
 //
 
 import Foundation
-import Darwin
+
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
 
 // An n dimensional vector
 // repreented by a double array

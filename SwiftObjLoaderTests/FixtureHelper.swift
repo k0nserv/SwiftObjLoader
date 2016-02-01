@@ -28,6 +28,16 @@ class FixtureHelper {
         return string as String
     }
 
+    func loadMtlFixture(name: String) throws -> String {
+        guard let path = bundle.pathForResource(name, ofType: "mtl") else {
+            throw FixtureLoadingErrors.NotFound
+        }
+
+        let string = try NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding)
+
+        return string as String
+    }
+
     static private func loadBundle() -> NSBundle {
         return NSBundle(forClass: self)
     }
