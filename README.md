@@ -10,12 +10,12 @@ Implemented features
 + Normals
 + Texture coordinates
 + Faces
++ Material loading and parsing(.mtl)
 
 Features todo
 -------------
 
 + Groups
-+ Material loading and parsing(.mtl)
 + Material reference
 
 License
