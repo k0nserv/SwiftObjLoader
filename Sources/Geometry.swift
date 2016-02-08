@@ -94,7 +94,7 @@ private func nestedEquality<T>(lhs: [[T]], _ rhs: [[T]], equal: ([T], [T]) -> Bo
         return false
     }
 
-    for var i = 0; i < lhs.count; i++ {
+    for i in 0..<lhs.count {
         if false == equal(lhs[i], rhs[i]) {
             return false
         }
@@ -119,7 +119,7 @@ func ==(lhs: Shape, rhs: Shape) -> Bool {
     }
 
     let valueCheck: (Vector, Vector) -> Bool = { a, b in
-        for var i = 0; i < a.count; i++ {
+        for i in 0..<a.count {
             if !doubleEquality(a[i], b[i]) {
                 return false
             }
