@@ -38,7 +38,7 @@ public struct Color {
 }
 
 class MaterialBuilder {
-    var name: NSString?
+    var name: NSString = ""
     var ambientColor: Color?
     var diffuseColor: Color?
     var specularColor: Color?
@@ -49,7 +49,7 @@ class MaterialBuilder {
 }
 
 public struct Material {
-    let name: NSString?
+    let name: NSString
     let ambientColor: Color
     let diffuseColor: Color
     let specularColor: Color
