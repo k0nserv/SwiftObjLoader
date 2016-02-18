@@ -61,53 +61,14 @@ public struct Material {
     init(builderBlock: (MaterialBuilder) -> MaterialBuilder) {
         let builder = builderBlock(MaterialBuilder())
 
-        if builder.name != nil {
-            self.name = builder.name
-        } else {
-            self.name = nil
-        }
-
-        if let a = builder.ambientColor {
-            self.ambientColor = a
-        } else {
-            self.ambientColor = Color.Black
-        }
-
-        if let d = builder.diffuseColor {
-            self.diffuseColor = d
-        } else {
-            self.diffuseColor = Color.Black
-        }
-
-        if let s = builder.specularColor {
-            self.specularColor = s
-        } else {
-            self.specularColor = Color.Black
-        }
-
-        if let i = builder.illuminationModel {
-            self.illuminationModel = i
-        } else {
-            self.illuminationModel = .Constant
-        }
-
-        if let s = builder.specularExponent {
-            self.specularExponent = s
-        } else {
-            self.specularExponent = nil
-        }
-
-        if let a = builder.ambientTextureMapFilePath {
-            self.ambientTextureMapFilePath = a
-        } else {
-            self.ambientTextureMapFilePath = nil
-        }
-
-        if let d = builder.diffuseTextureMapFilePath {
-            self.diffuseTextureMapFilePath = d
-        } else {
-            self.diffuseTextureMapFilePath = nil
-        }
+        self.name = builder.name
+        self.ambientColor = builder.ambientColor ?? Color.Black
+        self.diffuseColor = builder.diffuseColor ?? Color.Black
+        self.specularColor = builder.specularColor ?? Color.Black
+        self.illuminationModel = builder.illuminationModel ?? .Constant
+        self.specularExponent = builder.specularExponent
+        self.ambientTextureMapFilePath = builder.ambientTextureMapFilePath
+        self.diffuseTextureMapFilePath = builder.diffuseTextureMapFilePath
     }
 }
 
