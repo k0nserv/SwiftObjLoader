@@ -19,13 +19,19 @@ import Foundation
 typealias Vector = [Double]
 
 
-struct VertexIndex {
+class VertexIndex {
     // Vertex index, zero-based
     let vIndex: Int?
     // Normal index, zero-based
     let nIndex: Int?
     // Texture Coord index, zero-based
     let tIndex: Int?
+
+    init(vIndex: Int?, nIndex: Int?, tIndex: Int?) {
+        self.vIndex = vIndex
+        self.nIndex = nIndex
+        self.tIndex = tIndex
+    }
 }
 
 extension VertexIndex: Equatable {}
@@ -36,11 +42,22 @@ func ==(lhs: VertexIndex, rhs: VertexIndex) -> Bool {
            lhs.tIndex == rhs.tIndex
 }
 
-struct Shape {
+extension VertexIndex: CustomStringConvertible {
+    var description: String {
+        return "\(vIndex)/\(nIndex)/\(tIndex)"
+    }
+}
+
+// Consider converting this to a class.
+// Since it's already immutable it would
+// remain thread safe and needless copying
+// would stop. Also applies to Material
+public class Shape {
     let name: String?
     let vertices: [Vector]
     let normals: [Vector]
     let textureCoords: [Vector]
+    let material: Material?
 
     // Definition of faces that make up the shape
     // indexes are into the vertices, normals and
@@ -51,6 +68,20 @@ struct Shape {
     // Refers to vertices[4], normals[2] and textureCoords[0]
     //
     let faces: [[VertexIndex]]
+
+    init(name: String?,
+         vertices: [Vector],
+         normals: [Vector],
+         textureCoords: [Vector],
+         material: Material?,
+         faces: [[VertexIndex]]) {
+        self.name = name
+        self.vertices = vertices
+        self.normals = normals
+        self.textureCoords = textureCoords
+        self.material = material
+        self.faces = faces
+    }
 
     func dataForVertexIndex(v: VertexIndex) -> (Vector?, Vector?, Vector?) {
         var data: (Vector?, Vector?, Vector?) = (nil, nil, nil)
@@ -103,7 +134,7 @@ private func nestedEquality<T>(lhs: [[T]], _ rhs: [[T]], equal: ([T], [T]) -> Bo
     return true
 }
 
-func ==(lhs: Shape, rhs: Shape) -> Bool {
+public func ==(lhs: Shape, rhs: Shape) -> Bool {
     if lhs.name != rhs.name {
         return false
     }
@@ -137,7 +168,19 @@ func ==(lhs: Shape, rhs: Shape) -> Bool {
         return false
     }
 
-    if !nestedEquality(lhs.faces, rhs.faces, equal: { $0 == $1 }) {
+    let vertexIndexCheck: ([VertexIndex], [VertexIndex]) -> Bool = { a, b in
+        for i in 0..<a.count {
+            if a[i] != b[i] {
+                return false
+            }
+        }
+        return true
+    }
+    if !nestedEquality(lhs.faces, rhs.faces, equal: vertexIndexCheck) {
+        return false
+    }
+
+    if lhs.material != rhs.material {
         return false
     }
 

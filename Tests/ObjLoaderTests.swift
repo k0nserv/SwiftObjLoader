@@ -18,7 +18,8 @@ class ObjLoaderTests: XCTestCase {
 
     func testSimple() {
         let source = try? fixtureHelper.loadObjFixture("simple")
-        let loader = ObjLoader(source: source!)
+        let loader = ObjLoader(source: source!,
+                               basePath: fixtureHelper.resourcePath)
         do {
             let shapes = try loader.read()
             XCTAssertEqual(shapes.count, 1)
@@ -110,7 +111,20 @@ class ObjLoaderTests: XCTestCase {
                 ]
 
             ]
-            let expectedShape = Shape(name: "Cube", vertices: vertices, normals: normals, textureCoords: textureCoords, faces: faces)
+
+            let expectedMaterial = Material() {
+                $0.name = "Material"
+                $0.specularExponent = 96.078431
+                $0.ambientColor = Color.Black
+                $0.diffuseColor = Color(r: 0.595140, g: 0.074891, b: 0.080111)
+                $0.specularColor = Color(r: 0.500000, g: 0.500000, b: 0.500000)
+                $0.illuminationModel = .DiffuseSpecular
+                $0.ambientTextureMapFilePath = "test.bmp"
+                $0.diffuseTextureMapFilePath = "test_diffuse.bmp"
+
+                return $0
+            }
+            let expectedShape = Shape(name: "Cube", vertices: vertices, normals: normals, textureCoords: textureCoords, material: expectedMaterial, faces: faces)
             XCTAssertEqual(expectedShape, shapes[0])
             verifyLocalFaceIndexes(shapes[0])
         } catch ObjLoadingError.UnexpectedFileFormat(let errorMessage) {
@@ -122,7 +136,7 @@ class ObjLoaderTests: XCTestCase {
 
     func testMultiple() {
         let source = try? fixtureHelper.loadObjFixture("triangle_and_box")
-        let loader = ObjLoader(source: source!)
+        let loader = ObjLoader(source: source!, basePath: "")
         do {
             let shapes = try loader.read()
             XCTAssertEqual(shapes.count, 2)
@@ -148,7 +162,7 @@ class ObjLoaderTests: XCTestCase {
                     VertexIndex(vIndex: 0, nIndex: 0, tIndex: nil)
                 ]
             ]
-            let expectedTriangle = Shape(name: "Triangle", vertices: vertices, normals: normals, textureCoords: [], faces: faces)
+            let expectedTriangle = Shape(name: "Triangle", vertices: vertices, normals: normals, textureCoords: [], material: nil, faces: faces)
             XCTAssertEqual(expectedTriangle, triangle)
             verifyLocalFaceIndexes(triangle)
 
@@ -231,7 +245,7 @@ class ObjLoaderTests: XCTestCase {
                 ]
             ]
 
-            let expectedBox = Shape(name: "Cube", vertices: boxVertices, normals: boxNormals, textureCoords: [], faces: boxFaces)
+            let expectedBox = Shape(name: "Cube", vertices: boxVertices, normals: boxNormals, textureCoords: [], material: nil, faces: boxFaces)
             XCTAssertEqual(box, expectedBox)
             verifyLocalFaceIndexes(box)
 
@@ -239,6 +253,28 @@ class ObjLoaderTests: XCTestCase {
             XCTFail("Parsing failed with error \(errorMessage)")
         } catch {
             XCTFail("Parsing failed with unknown error")
+        }
+    }
+
+    func testAdvanced() {
+        let source = try? fixtureHelper.loadObjFixture("monkey")
+        let loader = ObjLoader(source: source!, basePath: fixtureHelper.resourcePath)
+
+        let shapes = try! loader.read()
+
+        XCTAssertEqual(shapes.count, 1)
+
+        let shape = shapes[0]
+        XCTAssertEqual(shape.faces.count, 968)
+        XCTAssertEqual(shape.name, "Suzanne")
+    }
+
+    func testPerformance() {
+        let source = try? fixtureHelper.loadObjFixture("monkey")
+        let loader = ObjLoader(source: source!, basePath: fixtureHelper.resourcePath)
+
+        measureBlock {
+            try! loader.read()
         }
     }
 

@@ -38,6 +38,12 @@ class FixtureHelper {
         return string as String
     }
 
+    var resourcePath: String {
+        get {
+            return bundle.resourcePath!
+        }
+    }
+
     static private func loadBundle() -> NSBundle {
         return NSBundle(forClass: self)
     }

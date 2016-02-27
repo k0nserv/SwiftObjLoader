@@ -48,7 +48,7 @@ class MaterialBuilder {
     var diffuseTextureMapFilePath: NSString?
 }
 
-public struct Material {
+public class Material {
     let name: NSString
     let ambientColor: Color
     let diffuseColor: Color
@@ -70,6 +70,18 @@ public struct Material {
         self.ambientTextureMapFilePath = builder.ambientTextureMapFilePath
         self.diffuseTextureMapFilePath = builder.diffuseTextureMapFilePath
     }
+}
+
+extension Material: Equatable {}
+
+public func ==(lhs: Material, rhs: Material) -> Bool {
+    let result = lhs.name.isEqualToString(rhs.name as String) &&
+            lhs.ambientColor.fuzzyEquals(rhs.ambientColor) &&
+            lhs.diffuseColor.fuzzyEquals(rhs.diffuseColor) &&
+            lhs.specularColor.fuzzyEquals(rhs.specularColor) &&
+            lhs.illuminationModel == rhs.illuminationModel;
+
+    return result;
 }
 
 public enum IlluminationModel: Int {

@@ -109,45 +109,59 @@ public class MaterialLoader {
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isDiffuseColor(m) {
+                }
+
+                if MaterialLoader.isDiffuseColor(m) {
                     let color = try readColor()
                     state.diffuseColor = color
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isSpecularColor(m) {
+                }
+
+                if MaterialLoader.isSpecularColor(m) {
                     let color = try readColor()
                     state.specularColor = color
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isSpecularExponent(m) {
+                }
+
+                if MaterialLoader.isSpecularExponent(m) {
                     let specularExponent = try readSpecularExponent()
 
                     state.specularExponent = specularExponent
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isIlluminationMode(m) {
+                }
+
+                if MaterialLoader.isIlluminationMode(m) {
                     let model = try readIlluminationModel()
                     state.illuminationModel = model
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isAmbientTextureMap(m) {
+                }
+
+                if MaterialLoader.isAmbientTextureMap(m) {
                     let mapFilename = try readFilename()
                     state.ambientTextureMapFilePath = basePath.stringByAppendingPathComponent(mapFilename as String)
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isDiffuseTextureMap(m) {
+                }
+
+                if MaterialLoader.isDiffuseTextureMap(m) {
                     let mapFilename = try readFilename()
                     state.diffuseTextureMapFilePath = basePath.stringByAppendingPathComponent(mapFilename as String)
 
                     scanner.moveToNextLine()
                     continue
-                } else if MaterialLoader.isNewMaterial(m) {
-                    if let material = buildMaterial() {
+                }
+
+                if MaterialLoader.isNewMaterial(m) {
+                    if let material = try buildMaterial() {
                         materials.append(material)
                     }
 
@@ -155,13 +169,13 @@ public class MaterialLoader {
                     state.materialName = scanner.readLine()
                     scanner.moveToNextLine()
                     continue
-                } else {
-                    scanner.readLine()
-                    scanner.moveToNextLine()
-                    continue
                 }
+                scanner.readLine()
+                scanner.moveToNextLine()
+                continue
             }
-            if let material = buildMaterial() {
+
+            if let material = try buildMaterial() {
                 materials.append(material)
             }
 
@@ -253,13 +267,17 @@ public class MaterialLoader {
         }
     }
 
-    private func buildMaterial() -> Material? {
+    private func buildMaterial() throws -> Material? {
         guard state.isDirty() else {
             return nil
         }
 
+        guard let name = state.materialName else {
+            throw MaterialLoadingError.UnexpectedFileFormat(error: "Material name required for all materials")
+        }
+
         return Material() {
-            $0.name              = self.state.materialName
+            $0.name              = name
             $0.ambientColor      = self.state.ambientColor
             $0.diffuseColor      = self.state.diffuseColor
             $0.specularColor     = self.state.specularColor

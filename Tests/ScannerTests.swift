@@ -38,6 +38,18 @@ class ScannerTests: XCTestCase {
         XCTAssertEqual(scanner.readMarker(), "v")
     }
 
+    func testReadTokens() {
+        scanner = Scanner(source: "filename.mtl other_filename.mtl some_stuff")
+        let t1 = try? scanner.readTokens()
+        XCTAssertNotNil(t1)
+        XCTAssertEqual(t1!, ["filename.mtl", "other_filename.mtl", "some_stuff"])
+
+        scanner = Scanner(source: "filename.mtl other_filename.mtl\nsome_stuff")
+        let t2 = try? scanner.readTokens()
+        XCTAssertNotNil(t2)
+        XCTAssertEqual(t2!, ["filename.mtl", "other_filename.mtl"])
+    }
+
 /*    func testReadVertex() {
         scanner = Scanner(source: "  1.0238 0.28382 1.023784\n")
 
@@ -70,7 +82,7 @@ class ScannerTests: XCTestCase {
         XCTAssertNotNil(rhs)
         XCTAssertEqual(lhs!.count, rhs!.count, "assertDoubleArrayEqual: Lengths not equal")
 
-        for var i = 0; i < lhs!.count; i++ {
+        for i in 0..<lhs!.count {
             XCTAssertEqualWithAccuracy(lhs![i], rhs![i], accuracy: 0.001,
                 "Doubles lhs[\(i)] = \(lhs![i]) and rhs[\(i)] = \(rhs![i]) were not equal with accuracy")
         }

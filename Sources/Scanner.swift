@@ -84,6 +84,17 @@ class Scanner {
         throw ScannerErrors.InvalidData(error: "Invalid String value")
     }
 
+    func readTokens() throws -> [NSString] {
+        var string: NSString?
+        var result: [NSString] = []
+
+        while scanner.scanUpToCharactersFromSet(NSCharacterSet.whitespaceAndNewlineCharacterSet(), intoString: &string) {
+            result.append(string!)
+        }
+
+        return result
+    }
+
     func reset() {
         scanner.scanLocation = 0
     }
@@ -188,7 +199,7 @@ class MaterialScanner: Scanner {
     //
     // Example:
     //
-    //     ka 0.2432 0.123 0.12
+    //     0.2432 0.123 0.12
     //
     func readColor() throws -> Color {
         var r = Double.infinity

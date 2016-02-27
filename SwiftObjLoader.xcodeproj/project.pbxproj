@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D6216D431C7A6E2000285A6D /* monkey.obj in Resources */ = {isa = PBXBuildFile; fileRef = D6216D401C7A6CF600285A6D /* monkey.obj */; };
+		D6216D441C7A6E2300285A6D /* monkey.mtl in Resources */ = {isa = PBXBuildFile; fileRef = D6216D3F1C7A6CF600285A6D /* monkey.mtl */; };
 		D65A346C1B96F39C008EBCA8 /* SwiftObjLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */; };
 		D6EB5AC91C6026AB00F1C5B7 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EB5AC21C6026AB00F1C5B7 /* Geometry.swift */; };
 		D6EB5ACB1C6026AB00F1C5B7 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EB5AC41C6026AB00F1C5B7 /* Material.swift */; };
@@ -34,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D6216D3F1C7A6CF600285A6D /* monkey.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monkey.mtl; sourceTree = "<group>"; };
+		D6216D401C7A6CF600285A6D /* monkey.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monkey.obj; sourceTree = "<group>"; };
 		D65A34611B96F39C008EBCA8 /* SwiftObjLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftObjLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65A346B1B96F39C008EBCA8 /* SwiftObjLoaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftObjLoaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6EB5AC21C6026AB00F1C5B7 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Geometry.swift; path = Sources/Geometry.swift; sourceTree = SOURCE_ROOT; };
@@ -122,6 +126,8 @@
 		D6EB5ADC1C6026D100F1C5B7 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				D6216D3F1C7A6CF600285A6D /* monkey.mtl */,
+				D6216D401C7A6CF600285A6D /* monkey.obj */,
 				D6EB5ADD1C6026D100F1C5B7 /* simple.mtl */,
 				D6EB5ADE1C6026D100F1C5B7 /* simple.obj */,
 				D6EB5ADF1C6026D100F1C5B7 /* triangle_and_box.obj */,
@@ -229,6 +235,8 @@
 			files = (
 				D6EB5AE21C6026D100F1C5B7 /* triangle_and_box.obj in Resources */,
 				D6EB5AE11C6026D100F1C5B7 /* simple.obj in Resources */,
+				D6216D441C7A6E2300285A6D /* monkey.mtl in Resources */,
+				D6216D431C7A6E2000285A6D /* monkey.obj in Resources */,
 				D6EB5AE01C6026D100F1C5B7 /* simple.mtl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
