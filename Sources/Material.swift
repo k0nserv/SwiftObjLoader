@@ -26,9 +26,9 @@ private func doubleEquality(a: Double, _ b: Double) -> Bool {
 public struct Color {
     public static let Black = Color(r: 0.0, g: 0.0, b: 0.0)
 
-    let r: Double
-    let g: Double
-    let b: Double
+    public let r: Double
+    public let g: Double
+    public let b: Double
 
     func fuzzyEquals(other: Color) -> Bool {
         return doubleEquality(self.r, other.r) &&
@@ -48,15 +48,15 @@ class MaterialBuilder {
     var diffuseTextureMapFilePath: NSString?
 }
 
-public class Material {
-    let name: NSString
-    let ambientColor: Color
-    let diffuseColor: Color
-    let specularColor: Color
-    let illuminationModel: IlluminationModel
-    let specularExponent: Double?
-    let ambientTextureMapFilePath: NSString?
-    let diffuseTextureMapFilePath: NSString?
+public final class Material {
+    public let name: NSString
+    public let ambientColor: Color
+    public let diffuseColor: Color
+    public let specularColor: Color
+    public let illuminationModel: IlluminationModel
+    public let specularExponent: Double?
+    public let ambientTextureMapFilePath: NSString?
+    public let diffuseTextureMapFilePath: NSString?
 
     init(builderBlock: (MaterialBuilder) -> MaterialBuilder) {
         let builder = builderBlock(MaterialBuilder())

@@ -21,11 +21,11 @@ public typealias Vector = [Double]
 
 public class VertexIndex {
     // Vertex index, zero-based
-    let vIndex: Int?
+    public let vIndex: Int?
     // Normal index, zero-based
-    let nIndex: Int?
+    public let nIndex: Int?
     // Texture Coord index, zero-based
-    let tIndex: Int?
+    public let tIndex: Int?
 
     init(vIndex: Int?, nIndex: Int?, tIndex: Int?) {
         self.vIndex = vIndex
@@ -53,11 +53,11 @@ extension VertexIndex: CustomStringConvertible {
 // remain thread safe and needless copying
 // would stop. Also applies to Material
 public class Shape {
-    let name: String?
-    let vertices: [Vector]
-    let normals: [Vector]
-    let textureCoords: [Vector]
-    let material: Material?
+    public let name: String?
+    public let vertices: [Vector]
+    public let normals: [Vector]
+    public let textureCoords: [Vector]
+    public let material: Material?
 
     // Definition of faces that make up the shape
     // indexes are into the vertices, normals and
@@ -67,7 +67,7 @@ public class Shape {
     //   VertexIndex(vIndex: 4, nIndex: 2, tIndex: 0)
     // Refers to vertices[4], normals[2] and textureCoords[0]
     //
-    let faces: [[VertexIndex]]
+    public let faces: [[VertexIndex]]
 
     public init(name: String?,
                 vertices: [Vector],
