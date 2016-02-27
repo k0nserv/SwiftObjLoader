@@ -102,7 +102,7 @@ class Scanner {
 
 // A Scanner with specific logic for .obj
 // files. Inherits common logic from Scanner
-class ObjScanner: Scanner {
+final class ObjScanner: Scanner {
     // Parses face declarations
     //
     // Example:
@@ -193,7 +193,7 @@ class ObjScanner: Scanner {
     }
 }
 
-class MaterialScanner: Scanner {
+final class MaterialScanner: Scanner {
 
     // Parses color declaration
     //

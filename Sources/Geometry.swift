@@ -16,10 +16,10 @@ import Foundation
 
 // An n dimensional vector
 // repreented by a double array
-typealias Vector = [Double]
+public typealias Vector = [Double]
 
 
-class VertexIndex {
+public class VertexIndex {
     // Vertex index, zero-based
     let vIndex: Int?
     // Normal index, zero-based
@@ -36,14 +36,14 @@ class VertexIndex {
 
 extension VertexIndex: Equatable {}
 
-func ==(lhs: VertexIndex, rhs: VertexIndex) -> Bool {
+public func ==(lhs: VertexIndex, rhs: VertexIndex) -> Bool {
     return lhs.vIndex == rhs.vIndex &&
            lhs.nIndex == rhs.nIndex &&
            lhs.tIndex == rhs.tIndex
 }
 
 extension VertexIndex: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         return "\(vIndex)/\(nIndex)/\(tIndex)"
     }
 }
@@ -69,12 +69,12 @@ public class Shape {
     //
     let faces: [[VertexIndex]]
 
-    init(name: String?,
-         vertices: [Vector],
-         normals: [Vector],
-         textureCoords: [Vector],
-         material: Material?,
-         faces: [[VertexIndex]]) {
+    public init(name: String?,
+                vertices: [Vector],
+                normals: [Vector],
+                textureCoords: [Vector],
+                material: Material?,
+                faces: [[VertexIndex]]) {
         self.name = name
         self.vertices = vertices
         self.normals = normals
@@ -83,7 +83,7 @@ public class Shape {
         self.faces = faces
     }
 
-    func dataForVertexIndex(v: VertexIndex) -> (Vector?, Vector?, Vector?) {
+    public final func dataForVertexIndex(v: VertexIndex) -> (Vector?, Vector?, Vector?) {
         var data: (Vector?, Vector?, Vector?) = (nil, nil, nil)
 
         if let vi = v.vIndex {

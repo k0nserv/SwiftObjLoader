@@ -13,7 +13,7 @@ enum ObjLoadingError: ErrorType {
 }
 
 
-public class ObjLoader {
+public final class ObjLoader {
     // Represent the state of parsing
     // at any point in time
     class State {

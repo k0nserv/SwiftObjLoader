@@ -12,7 +12,7 @@ public enum MaterialLoadingError: ErrorType {
     case UnexpectedFileFormat(error: String)
 }
 
-public class MaterialLoader {
+public final class MaterialLoader {
 
     // Represent the state of parsing
     // at any point in time
@@ -80,7 +80,7 @@ public class MaterialLoader {
     // Init an MaterialLoader with the
     // source of the .mtl file as a string
     //
-    public init(source: String, basePath: NSString) {
+    init(source: String, basePath: NSString) {
         self.basePath = basePath
         scanner = MaterialScanner(source: source)
         state = State()
