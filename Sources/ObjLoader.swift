@@ -13,15 +13,16 @@ enum ObjLoadingError: ErrorType {
 }
 
 
-class ObjLoader {
+public class ObjLoader {
     // Represent the state of parsing
     // at any point in time
-    struct State {
+    class State {
         var objectName: NSString?
         var vertices: [Vector] = []
         var normals: [Vector] = []
         var textureCoords: [Vector] = []
         var faces: [[VertexIndex]] = []
+        var material: Material?
     }
 
     // Source markers
@@ -30,10 +31,14 @@ class ObjLoader {
     private static let normalMarker = "vn"
     private static let textureCoordMarker = "vt"
     private static let objectMarker = "o".characterAtIndex(0)
+    private static let groupMarker = "g".characterAtIndex(0)
     private static let faceMarker = "f".characterAtIndex(0)
+    private static let materialLibraryMarker = "mtllib"
+    private static let useMaterialMarker = "usemtl"
 
     private let scanner: ObjScanner
-    private var running: Bool = false
+    private let basePath: NSString
+    private var materialCache: [NSString: Material] = [:]
 
     private var state = State()
     private var vertexCount = 0
@@ -43,16 +48,16 @@ class ObjLoader {
     // Init an objloader with the
     // source of the .obj file as a string
     //
-    init(source: String) {
+    public init(source: String, basePath: NSString) {
         scanner = ObjScanner(source: source)
+        self.basePath = basePath
     }
 
     // Read the specified source.
     // This operation is singled threaded and
     // should not be invoked again before
     // the call has returned
-    func read() throws -> [Shape] {
-        running = true
+    public func read() throws -> [Shape] {
         var shapes: [Shape] = []
 
         resetState()
@@ -69,29 +74,37 @@ class ObjLoader {
                 if ObjLoader.isComment(m) {
                     scanner.moveToNextLine()
                     continue
-                } else if ObjLoader.isVertex(m) {
+                }
+
+                if ObjLoader.isVertex(m) {
                     if let v = try readVertex() {
                         state.vertices.append(v)
                     }
 
                     scanner.moveToNextLine()
                     continue
-                } else if ObjLoader.isNormal(m) {
+                }
+
+                if ObjLoader.isNormal(m) {
                     if let n = try readVertex() {
                         state.normals.append(n)
                     }
 
                     scanner.moveToNextLine()
                     continue
-                } else if ObjLoader.isTextureCoord(m) {
+                }
+
+                if ObjLoader.isTextureCoord(m) {
                     if let vt = scanner.readTextureCoord() {
                         state.textureCoords.append(vt)
                     }
 
                     scanner.moveToNextLine()
                     continue
-                } else if ObjLoader.isObject(m) {
-                    if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
+                }
+
+                if ObjLoader.isObject(m) {
+                    if let s = buildShape() {
                         shapes.append(s)
                     }
 
@@ -99,27 +112,55 @@ class ObjLoader {
                     state.objectName = scanner.readLine()
                     scanner.moveToNextLine()
                     continue
-                } else if ObjLoader.isFace(m) {
+                }
+
+                if ObjLoader.isGroup(m) {
+                    if let s = buildShape() {
+                        shapes.append(s)
+                    }
+
+                    state = State()
+                    state.objectName = try scanner.readString()
+                    scanner.moveToNextLine()
+                    continue
+                }
+
+                if ObjLoader.isFace(m) {
                     if let indices = try scanner.readFace() {
                         state.faces.append(normalizeVertexIndices(indices))
                     }
 
                     scanner.moveToNextLine()
                     continue
-                } else {
+                }
+
+                if ObjLoader.isMaterialLibrary(m) {
+                    let filenames = try scanner.readTokens()
+                    try parseMaterialFiles(filenames)
                     scanner.moveToNextLine()
                     continue
                 }
+
+                if ObjLoader.isUseMaterial(m) {
+                    let materialName = try scanner.readString()
+
+                    guard let material = self.materialCache[materialName] else {
+                        throw ObjLoadingError.UnexpectedFileFormat(error: "Material \(materialName) referenced before it was definied")
+                    }
+
+                    state.material = material
+                    scanner.moveToNextLine()
+                    continue
+                }
+
+                scanner.moveToNextLine()
             }
 
-            if let s = buildShape(state.objectName, vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, faces: state.faces) {
+            if let s = buildShape() {
                 shapes.append(s)
             }
             state = State()
-
-            running = false
         } catch let e {
-            running = false
             resetState()
             throw e
         }
@@ -146,8 +187,20 @@ class ObjLoader {
         return marker.length == 1 && marker.characterAtIndex(0) == objectMarker
     }
 
+    private static func isGroup(marker: NSString) -> Bool {
+        return marker.length == 1 && marker.characterAtIndex(0) == groupMarker
+    }
+
     private static func isFace(marker: NSString) -> Bool {
         return marker.length == 1 && marker.characterAtIndex(0) == faceMarker
+    }
+
+    private static func isMaterialLibrary(marker: NSString) -> Bool {
+        return marker == materialLibraryMarker
+    }
+
+    private static func isUseMaterial(marker: NSString) -> Bool {
+        return marker == useMaterialMarker
     }
 
     private func readVertex() throws -> [Double]? {
@@ -166,16 +219,16 @@ class ObjLoader {
         textureCoordCount = 0
     }
 
-    private func buildShape(name: NSString?, vertices: [[Double]], normals: [[Double]], textureCoords: [[Double]], faces: [[VertexIndex]]) -> Shape? {
-        if vertices.count == 0 && normals.count == 0 && textureCoords.count == 0 {
+    private func buildShape() -> Shape? {
+        if state.vertices.count == 0 && state.normals.count == 0 && state.textureCoords.count == 0 {
             return nil
         }
 
 
-        let result =  Shape(name: (name as String?), vertices: vertices, normals: normals, textureCoords: textureCoords, faces: faces)
-        vertexCount += vertices.count
-        normalCount += normals.count
-        textureCoordCount += textureCoords.count
+        let result =  Shape(name: (state.objectName as String?), vertices: state.vertices, normals: state.normals, textureCoords: state.textureCoords, material: state.material, faces: state.faces)
+        vertexCount += state.vertices.count
+        normalCount += state.normals.count
+        textureCoordCount += state.textureCoords.count
 
         return result
     }
@@ -185,6 +238,29 @@ class ObjLoader {
             return VertexIndex(vIndex: ObjLoader.normalizeIndex($0.vIndex, count: vertexCount),
                 nIndex: ObjLoader.normalizeIndex($0.nIndex, count: normalCount),
                 tIndex: ObjLoader.normalizeIndex($0.tIndex, count: textureCoordCount))
+        }
+    }
+
+    private func parseMaterialFiles(filenames: [NSString]) throws {
+        for filename in filenames {
+            let fullPath = basePath.stringByAppendingPathComponent(filename as String)
+            do {
+                let fileContents = try NSString(contentsOfFile: fullPath,
+                                        encoding: NSUTF8StringEncoding)
+                let loader = MaterialLoader(source: fileContents as String,
+                                            basePath: basePath)
+
+                let materials = try loader.read()
+
+                for material in materials {
+                    materialCache[material.name] = material
+                }
+
+            } catch MaterialLoadingError.UnexpectedFileFormat(let msg) {
+                throw ObjLoadingError.UnexpectedFileFormat(error: msg)
+            } catch {
+                throw ObjLoadingError.UnexpectedFileFormat(error: "Invalid material file at \(fullPath)")
+            }
         }
     }
 
